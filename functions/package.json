@@ -1,0 +1,23 @@
+{
+  "name": "functions",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "twilio-run",
+    "deploy": "twilio-run deploy"
+  },
+  "dependencies": {
+    "@google-cloud/dialogflow": "^4.7.0",
+    "@twilio/runtime-handler": "1.2.2",
+    "lodash": "^4.17.21",
+    "twilio": "^3.56",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "twilio-run": "^3.4.1"
+  },
+  "engines": {
+    "node": "14"
+  }
+}

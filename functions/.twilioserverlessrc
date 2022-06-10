@@ -1,0 +1,7 @@
+{
+  "commands": {},
+  "environments": {},
+  "projects": {},
+  "runtime": "node14",
+  "serviceName": "web-chat-agent-assist-gdf"
+}
