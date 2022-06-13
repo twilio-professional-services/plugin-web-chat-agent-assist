@@ -4,6 +4,8 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import AssistantIcon from "@material-ui/icons/Assistant";
+import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
 import { withStyles } from "@material-ui/core/styles";
 
 import Section from "./components/Section/Section";
@@ -24,6 +26,14 @@ const styles = {
   },
   header: {
     marginBottom: 10,
+    display: "flex",
+    alignItems: "center",
+  },
+  cannedHeader: {
+    marginBottom: 10,
+    marginTop: 6,
+    display: "flex",
+    alignItems: "center",
   },
   title: {
     fontSize: "24px",
@@ -35,6 +45,10 @@ const styles = {
   divider: {
     marginTop: 5,
     marginBottom: 5,
+  },
+  icon: {
+    marginRight: 6,
+    fontSize: 18,
   },
 };
 
@@ -48,7 +62,6 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
       const taskNLPData = nlp[reservationSid];
 
       if (taskNLPData !== undefined && !!taskNLPData.intentInfo) {
-        console.log("responses", responses);
         const intent = taskNLPData.intentInfo.intent.displayName;
         const filteredResponses = responses.filter((section: any) => {
           if (section.section.toLowerCase() === intent) {
@@ -58,7 +71,8 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
 
         return [
           {
-            section: `Agent Assist - ${intent}`,
+            section: `Intent - ${intent}`,
+            description: `Last message: ${taskNLPData.lastMessage}`,
             questions:
               filteredResponses.length > 0
                 ? filteredResponses[0].questions
@@ -80,19 +94,43 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
     <TaskContext.Consumer>
       {(context) => (
         <>
-          <Grid container className={classes.root}>
-            <Grid item xs={12} className={classes.header}>
-              <Typography className={classes.title}>
-                Pre-canned Chat Responses
-              </Typography>
-              <Divider className={classes.divider} />
-            </Grid>
-            {responses.length === 0 ? (
-              <CircularProgress className={classes.progress} />
-            ) : (
-              <>
-                {Object.keys(nlp).length !== 0 &&
-                  renderItems(context).map((q: any) => (
+          {!!context.task && (
+            <Grid container className={classes.root}>
+              {responses.length === 0 ? (
+                <CircularProgress className={classes.progress} />
+              ) : (
+                <>
+                  <Grid item xs={12} className={classes.header}>
+                    <AssistantIcon className={classes.icon} />
+                    <Typography className={classes.title}>
+                      Agent Assist
+                    </Typography>
+                    <Divider className={classes.divider} />
+                  </Grid>
+                  {!!nlp && Object.keys(nlp).length !== 0 ? (
+                    renderItems(context).map((q: any) => (
+                      <Grid
+                        item
+                        xs={12}
+                        className={classes.section}
+                        key={q.section}
+                      >
+                        <Section {...q} />
+                      </Grid>
+                    ))
+                  ) : (
+                    <Grid item xs={12} className={classes.header}>
+                      No suggested responses.
+                    </Grid>
+                  )}
+                  <Grid item xs={12} className={classes.cannedHeader}>
+                    <ChatBubbleIcon className={classes.icon} />
+                    <Typography className={classes.title}>
+                      Canned Chat Responses
+                    </Typography>
+                    <Divider className={classes.divider} />
+                  </Grid>
+                  {responses.map((q: any) => (
                     <Grid
                       item
                       xs={12}
@@ -102,19 +140,10 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
                       <Section {...q} />
                     </Grid>
                   ))}
-                {responses.map((q: any) => (
-                  <Grid
-                    item
-                    xs={12}
-                    className={classes.section}
-                    key={q.section}
-                  >
-                    <Section {...q} />
-                  </Grid>
-                ))}
-              </>
-            )}
-          </Grid>
+                </>
+              )}
+            </Grid>
+          )}
         </>
       )}
     </TaskContext.Consumer>

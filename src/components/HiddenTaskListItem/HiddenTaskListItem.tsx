@@ -56,7 +56,6 @@ class HiddenTaskListItem extends React.Component<Props> {
 
       // check if the task exists in state
       const existingTask = this.props.nlp[selectedTaskSid];
-      console.log("existingTask", existingTask);
       // if not, create the record (default sets intentInfo = null)
       if (!existingTask && !lastMessage.isFromMe) {
         this.props.updateNLP({
