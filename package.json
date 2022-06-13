@@ -8,13 +8,13 @@
   "dependencies": {
     "@twilio/flex-plugin-scripts": "5.1.0",
     "axios": "^0.27.2",
-    "react": "16.5.2",
-    "react-dom": "16.5.2",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "react-emotion": "9.2.12"
   },
   "devDependencies": {
     "@twilio/flex-ui": "^1",
-    "react-test-renderer": "16.5.2",
+    "react-test-renderer": "16.13.1",
     "typescript": "^4"
   }
 }

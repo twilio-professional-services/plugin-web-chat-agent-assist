@@ -8,6 +8,7 @@ import Question from "../Question";
 
 interface OwnProps {
   section: string;
+  description?: string;
   questions: {
     label: string;
     text: string;
@@ -24,9 +25,19 @@ const styles = {
   },
   sectionTitle: {
     fontWeight: 700,
-    marginBottom: 8,
+    marginBottom: 0,
     fontSize: "20px",
     color: "rgb(5, 125, 158)",
+  },
+  agentAssistTitle: {
+    fontWeight: 700,
+    marginBottom: 0,
+    fontSize: "20px",
+    color: "#FF6C00",
+  },
+  sectionDescription: {
+    fontWeight: 700,
+    fontSize: "14px",
   },
   paper: {
     paddingLeft: "20px",
@@ -38,6 +49,7 @@ const styles = {
   },
   divider: {
     marginBottom: 8,
+    marginTop: 8,
   },
 };
 
@@ -46,10 +58,24 @@ const Section: React.FunctionComponent<Props> = ({
   section,
   questions,
   classes,
+  description,
 }) => {
   return (
     <Paper className={classes.paper} elevation={2}>
-      <Typography className={classes.sectionTitle}>{section}</Typography>
+      <Typography
+        className={
+          section.indexOf("Intent") > -1
+            ? classes.agentAssistTitle
+            : classes.sectionTitle
+        }
+      >
+        {section}
+      </Typography>
+      {!!description && (
+        <Typography className={classes.sectionDescription} noWrap>
+          {description}
+        </Typography>
+      )}
       <Divider className={classes.divider} />
       {questions.map((q) => {
         return <Question key={q.text} label={q.label} text={q.text} />;
