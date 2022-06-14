@@ -10,9 +10,15 @@ export async function getCannedReponses () {
     });
 }
 
-export async function getDialogflowNLP (message: string, taskSid: string | undefined) {
-    const endpointURL = `${process.env.REACT_APP_SERVICE_FUNCTION_URL}/gdf-bot?customerMessage=${message}` ?? '';
+export async function getDialogflowNLP(message: string, taskSid: string | undefined, channelSid: string | undefined) {
+    const params = new URLSearchParams({ customerMessage: message });
+    if (channelSid) {
+      params.append('channelSid', channelSid);
+    }
+    const queryParams = params.toString();
+    const endpointURL = `${process.env.REACT_APP_SERVICE_FUNCTION_URL}/gdf-bot?${queryParams}` ?? '';
     const { data } = await axios.get(endpointURL);
+    console.log(data);
     const response = {...data, taskSid};
     return response;
 }

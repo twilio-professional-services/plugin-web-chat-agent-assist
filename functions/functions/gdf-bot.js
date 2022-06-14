@@ -5,13 +5,15 @@ const uuid = require("uuid");
  ** Should be a Protected function
  */
 async function sendToGDF(gcpCreds, event) {
+  const { customerMessage, channelSid } = event;
+
   // Grab GCP Service Account credentials from protected asset
   const privateKey = gcpCreds["private_key"];
   const clientEmail = gcpCreds["client_email"];
   const projectId = gcpCreds["project_id"];
 
-  // A unique identifier for the given session - random UUID
-  const sessionId = uuid.v1();
+  // A unique identifier for the given session - channelSid OR random UUID
+  const sessionId = channelSid ?? uuid.v1();
 
   const config = {
     credentials: {
@@ -33,9 +35,14 @@ async function sendToGDF(gcpCreds, event) {
       queryInput: {
         text: {
           // The query to send to the dialogflow agent
-          text: event.customerMessage,
+          text: customerMessage,
           // The language used by the client (en-US)
           languageCode: "en-US",
+        },
+      },
+      queryParams: {
+        sentimentAnalysisRequestConfig: {
+          analyzeQueryTextSentiment: true,
         },
       },
     };
