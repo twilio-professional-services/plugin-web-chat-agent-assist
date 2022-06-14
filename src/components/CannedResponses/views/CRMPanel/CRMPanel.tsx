@@ -63,6 +63,7 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
 
       if (taskNLPData !== undefined && !!taskNLPData.intentInfo) {
         const intent = taskNLPData.intentInfo.intent.displayName;
+        const sentiment = taskNLPData.intentInfo.sentimentAnalysisResult.queryTextSentiment ?? null;
         const filteredResponses = responses.filter((section: any) => {
           if (section.section.toLowerCase() === intent) {
             return section;
@@ -73,6 +74,7 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
           {
             section: `Intent - ${intent}`,
             description: `Last message: ${taskNLPData.lastMessage}`,
+            sentiment,
             questions:
               filteredResponses.length > 0
                 ? filteredResponses[0].questions
