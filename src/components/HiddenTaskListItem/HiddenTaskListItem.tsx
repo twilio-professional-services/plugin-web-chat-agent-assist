@@ -65,7 +65,7 @@ class HiddenTaskListItem extends React.Component<Props> {
       }
 
       if (!lastMessage.isFromMe) {
-        const channelSid = chatChannel.sid ?? undefined;
+        const channelSid = chatChannel.source.sid ?? undefined;
         const messageBody = lastMessage.source.state.body;
         const latestIntentInfo = this.props.nlp[selectedTaskSid].intentInfo;
         const latestMessage = this.props.nlp[selectedTaskSid].lastMessage;
