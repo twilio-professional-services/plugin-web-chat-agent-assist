@@ -17,9 +17,9 @@ A plugin to monitor the chat in Flex to parse customer responses and forward the
 - **Google Cloud Platform** - houses the service account credentials to perform authenticated API calls to Google Dialogflow from the Twilio Function
 - **Redux** - used to store and perform async logic to retrieve list of pre-canned responses and NLP results from Google Dialogflow
 
-### Diagram -- CREATE NEW DIAGRAM
+### NLP Query Workflow Diagram
 
-<img  src="./readme_assets/diagram.png"  alt="Twilio"  width="100%"  />
+<img  src="./readme_assets/nlp-diagram.png"  alt="Twilio"  width="100%"  />
 
 ---
 
@@ -55,33 +55,64 @@ Before we begin, we need to collect all the config values we need to run this Fl
 
 ## Plugin Details
 
-[TO-DO: INSERT DESCRIPTION]
+This plugin will replace the `CRM Panel` in Flex with a view that contains two sections:
+
+- **Agent Assist** - the location for Google Dialogflow intent information and matching responses for the category matched to the identified intent of the customer message. If no category of the canned responses matches the intent returned from Dialogflow, no suggested responses will be shown.
+- **Canned Chat Responses** - a list (broken out by category) of all canned chat responses, which are fetched from the Twilio Function.
 
 ### CRM Panel
 
-[TO-DO: CRM PANEL FUNCTIONALITY]
+Under each response, there is a `Send` button that will automatically send the response to the customer, and an `Insert` button that will place the text in the chat input field.
 
-<img  src="./functions/assets/crm-pane.gif"  alt="CRM Panel"  width="800"  />
+<img  src="./readme_assets/crm-panel.png"  alt="CRM Panel"  width="800"  />
 
-### Toggling the Placement of the Responses
+### Google Dialogflow
 
-The placement of the responses is currently controlled by a `boolean` value named `crmPanelView` within `/src/ChatMessageCannedResponsePlugin.tsx`.
+Starting with the Google Dialogflow agent, we need to create a new agent and do some initial configuration of intents.
 
-If this value is set to `true`, the canned responses will render to the CRM Panel:
+1. Navigate to https://dialogflow.cloud.google.com/
 
-```javascript
-const crmPanelView = true;
-```
+2. Login.
 
-If this value is set to `false`, the canned responses will render in the Chat widget beneath the text input field:
+3. Click on the cog on the left, and then click on create a new agent.
 
-```javascript
-const crmPanelView = false;
-```
+<img  src="https://twilio-cms-prod.s3.amazonaws.com/images/Screenshot_2022-04-21_at_13.36.01.width-500.png"  alt="Twilio"  width="250" />
 
-By default, `crmPanelView` is set to `false`.
+4. Give it a name, set the default time zone and press create.
 
----
+5. It should take a few seconds to create the agent. Next, let's build a couple intents:
+
+   #### Sales Intent
+
+   <img  src="./readme_assets/sales-intent.png"  alt="Twilio"  width="100%"  />
+
+   #### Support Intent
+
+   <img  src="./readme_assets/support-intent.png"  alt="Twilio"  width="100%"  />
+
+6. We now have our agent configured with a couple intents that match up to the categories in our canned responses. We will need a Google service account to access the agent via API. To set this up, navigate to the general agent options by clicking on the cog once again. Make sure you make a note of your project id, as you will need it later.
+
+<img  src="https://twilio-cms-prod.s3.amazonaws.com/images/Screenshot_2022-04-21_at_13.58.55.width-1600.png"  alt="Twilio"  width="800" />
+
+### Google Cloud Platform
+
+You've now created the agent on the Dialogflow console and clicked on the project ID to navigate to the GCP console.
+
+To allow our Twilio Function to perform authenticated API requests to Dialogflow, we will need a service account. We can create these via the GCP console by following this procedure:
+
+1. Click on the Navigation Menu on the top left, and under "IAM and Admin", click on "Service Accounts":
+
+<img  src="https://twilio-cms-prod.s3.amazonaws.com/images/Screenshot_2022-04-21_at_14.14.54.width-500.png"  alt="Twilio"  width="300" />
+
+2. Click on the create service account on the top, fill in the form, and then click “Create and Continue”:
+
+<img  src="https://twilio-cms-prod.s3.amazonaws.com/images/Screenshot_2022-04-21_at_14.19.10.width-1000.png"  alt="Twilio"  width="300" />
+
+3. Click on "Select a role", pick "Dialogflow Service Agent", then press "Continue", and finally press"Done" to complete this process.The account should look something like this:
+
+<img  src="https://twilio-cms-prod.s3.amazonaws.com/images/Screenshot_2022-04-21_at_14.24.04.width-1600.png"  alt="Twilio"  width="600" />
+
+4. Finally, click on the three dots under "Actions" then "Manage Keys", click on "Add Key" then "Create New Key". Pick a JSON type key and press “Create”. Your browser will download a JSON file automatically. We will use this JSON file within our Twilio Function in the following section.
 
 ## Local Development
 
