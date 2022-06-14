@@ -24,9 +24,9 @@ export const Actions = {
     type: ACTION_GET_RESPONSES,
     payload: getCannedReponses(),
   }),
-  nlpPromise: (message: string, taskSid: string | undefined) => ({
+  nlpPromise: (message: string, taskSid: string | undefined, channelSid: string | undefined) => ({
     type: ACTION_GET_NLP,
-    payload: getDialogflowNLP(message, taskSid),
+    payload: getDialogflowNLP(message, taskSid, channelSid),
   }),
   updateNLP: (data: any) => ({
     type: ACTION_UPDATE_NLP,

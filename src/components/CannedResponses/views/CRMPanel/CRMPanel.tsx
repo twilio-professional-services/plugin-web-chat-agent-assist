@@ -63,6 +63,7 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
 
       if (taskNLPData !== undefined && !!taskNLPData.intentInfo) {
         const intent = taskNLPData.intentInfo.intent.displayName;
+        const sentiment = taskNLPData.intentInfo.sentimentAnalysisResult.queryTextSentiment ?? null;
         const filteredResponses = responses.filter((section: any) => {
           if (section.section.toLowerCase() === intent) {
             return section;
@@ -73,6 +74,7 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
           {
             section: `Intent - ${intent}`,
             description: `Last message: ${taskNLPData.lastMessage}`,
+            sentiment,
             questions:
               filteredResponses.length > 0
                 ? filteredResponses[0].questions
@@ -96,7 +98,7 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
         <>
           {!!context.task && (
             <Grid container className={classes.root}>
-              {responses.length === 0 ? (
+              {responses && responses.length === 0 ? (
                 <CircularProgress className={classes.progress} />
               ) : (
                 <>
@@ -130,7 +132,7 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
                     </Typography>
                     <Divider className={classes.divider} />
                   </Grid>
-                  {responses.map((q: any) => (
+                  {responses && responses.map((q: any) => (
                     <Grid
                       item
                       xs={12}

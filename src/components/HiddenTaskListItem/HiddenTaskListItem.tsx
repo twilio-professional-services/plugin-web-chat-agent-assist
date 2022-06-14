@@ -14,7 +14,7 @@ export interface StateToProps {
 
 export interface DispatchToProps {
   responsesPromise: () => void;
-  nlpPromise: (message: string, taskSid: string | undefined) => void;
+  nlpPromise: (message: string, taskSid: string | undefined, channelSid: string | undefined) => void;
   updateNLP: (data: any) => void;
 }
 
@@ -65,11 +65,12 @@ class HiddenTaskListItem extends React.Component<Props> {
       }
 
       if (!lastMessage.isFromMe) {
+        const channelSid = chatChannel.source.sid ?? undefined;
         const messageBody = lastMessage.source.state.body;
         const latestIntentInfo = this.props.nlp[selectedTaskSid].intentInfo;
         const latestMessage = this.props.nlp[selectedTaskSid].lastMessage;
         if (!latestIntentInfo || latestMessage !== messageBody) {
-          this.props.nlpPromise(messageBody, selectedTaskSid);
+          this.props.nlpPromise(messageBody, selectedTaskSid, channelSid);
         }
       }
     }

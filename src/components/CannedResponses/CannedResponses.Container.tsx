@@ -14,7 +14,7 @@ export interface StateToProps {
 
 export interface DispatchToProps {
   responsesPromise: () => void;
-  nlpPromise: (message: string, taskSid: string | undefined) => void;
+  nlpPromise: (message: string, taskSid: string | undefined, channelSid: string | undefined) => void;
 }
 
 type Props = StateToProps & DispatchToProps;
