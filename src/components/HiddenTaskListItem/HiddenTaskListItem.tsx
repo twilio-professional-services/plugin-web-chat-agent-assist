@@ -14,7 +14,11 @@ export interface StateToProps {
 
 export interface DispatchToProps {
   responsesPromise: () => void;
-  nlpPromise: (message: string, taskSid: string | undefined, channelSid: string | undefined) => void;
+  nlpPromise: (
+    message: string,
+    taskSid: string | undefined,
+    channelSid: string | undefined
+  ) => void;
   updateNLP: (data: any) => void;
 }
 
@@ -44,14 +48,18 @@ class HiddenTaskListItem extends React.Component<Props> {
     const { isLoadingChannel, isLoadingMembers, isLoadingMessages, messages } =
       chatChannel;
 
+    // Ensure all information is loaded before performing further action
     if (
       !isLoadingChannel &&
       !isLoadingMembers &&
       !isLoadingMessages &&
       messages.length > 0
     ) {
-      const selectedTaskSid = this.props.task._task.sid ?? "TODO_FIX";
+      // Grab Task Sid for key
+      const selectedTaskSid = this.props.task._task.sid ?? null;
+      // Get messages from the chat channel
       const { messages } = chatChannel;
+      // Identify the last message in the chat
       const lastMessage = messages[messages.length - 1];
 
       // check if the task exists in state
@@ -64,12 +72,16 @@ class HiddenTaskListItem extends React.Component<Props> {
         });
       }
 
+      // Verify the last message isn't from the agent (can be improved)
       if (!lastMessage.isFromMe) {
         const channelSid = chatChannel.source.sid ?? undefined;
         const messageBody = lastMessage.source.state.body;
         const latestIntentInfo = this.props.nlp[selectedTaskSid].intentInfo;
         const latestMessage = this.props.nlp[selectedTaskSid].lastMessage;
+
+        // If there is no intent information or the last customer message is new
         if (!latestIntentInfo || latestMessage !== messageBody) {
+          // Kick off redux action to fetch NLP data from Google Dialogflow
           this.props.nlpPromise(messageBody, selectedTaskSid, channelSid);
         }
       }
