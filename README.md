@@ -55,16 +55,30 @@ Before we begin, we need to collect all the config values we need to run this Fl
 
 ## Plugin Details
 
-This plugin will replace the `CRM Panel` in Flex with a view that contains two sections:
+The Web Chat Agent Assist plugin is comprised of two custom components combined with Redux to fetch, store, and display data asynchronously. The `HiddenTaskListItem` and `CannedResponses` components are tied into the same Redux state, which allows for convenient access to all data that needs to be populated into the UI.
+
+### Hidden Task List Item
+
+This component is responsible for identifying new messages from the customer and forwarding the body of the message to a Twilio Function that returns the NLP data (intent, sentiment, etc.) from Google Dialogflow.
+
+When the plugin is loaded, this component mounts to the `TaskListItem`, which inherits props related to the task and chat channel information. There is no UI for this component.
+
+The core logic for processing the messages within the chat channel happens within the `componentDidUpdate()` method, which is only available to React Class components. This method is fired everytime the component updates, which can occur if new props have been provided by a parent component or an internal state has been changed.
+
+For further technical implementation details, please see `./src/components/HiddenTaskListItem/HiddenTaskListItem.tsx`.
+
+### Canned Responses Component
+
+This component will replace the `CRM Panel` in Flex with a view that contains two sections:
 
 - **Agent Assist** - the location for Google Dialogflow intent information and matching responses for the category matched to the identified intent of the customer message. If no category of the canned responses matches the intent returned from Dialogflow, no suggested responses will be shown.
 - **Canned Chat Responses** - a list (broken out by category) of all canned chat responses, which are fetched from the Twilio Function.
 
-### CRM Panel
-
 Under each response, there is a `Send` button that will automatically send the response to the customer, and an `Insert` button that will place the text in the chat input field.
 
 <img  src="./readme_assets/crm-panel.png"  alt="CRM Panel"  width="800"  />
+
+---
 
 ### Google Dialogflow
 

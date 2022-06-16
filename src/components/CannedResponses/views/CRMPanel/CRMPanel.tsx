@@ -56,14 +56,20 @@ const styles = {
 const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
   const { classes, responses, nlp } = props;
 
+  // Function to determine which responses should appear in the Agent Assist section
   const renderItems = (context: any) => {
     if (!!context.task) {
       const reservationSid = context.task._task.sid;
       const taskNLPData = nlp[reservationSid];
 
       if (taskNLPData !== undefined && !!taskNLPData.intentInfo) {
+        // Pull the intent from the Google Dialogflow resulst
         const intent = taskNLPData.intentInfo.intent.displayName;
-        const sentiment = taskNLPData.intentInfo.sentimentAnalysisResult.queryTextSentiment ?? null;
+        // Pull the sentiment analysis results
+        const sentiment =
+          taskNLPData.intentInfo.sentimentAnalysisResult.queryTextSentiment ??
+          null;
+        // Filter the canned responses by category for a matching intent
         const filteredResponses = responses.filter((section: any) => {
           if (section.section.toLowerCase() === intent) {
             return section;
@@ -132,16 +138,17 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
                     </Typography>
                     <Divider className={classes.divider} />
                   </Grid>
-                  {responses && responses.map((q: any) => (
-                    <Grid
-                      item
-                      xs={12}
-                      className={classes.section}
-                      key={q.section}
-                    >
-                      <Section {...q} />
-                    </Grid>
-                  ))}
+                  {responses &&
+                    responses.map((q: any) => (
+                      <Grid
+                        item
+                        xs={12}
+                        className={classes.section}
+                        key={q.section}
+                      >
+                        <Section {...q} />
+                      </Grid>
+                    ))}
                 </>
               )}
             </Grid>
