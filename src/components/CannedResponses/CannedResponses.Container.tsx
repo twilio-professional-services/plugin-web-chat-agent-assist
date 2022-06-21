@@ -4,17 +4,22 @@ import { bindActionCreators, Dispatch } from "redux";
 
 import { AppState } from "../../states";
 import { Actions } from "../../states/CannedResponsesState";
+import { CannedResponseCategory, TaskNLPEntries } from "../../shared/types";
 import CannedResponsesUI from "./CannedResponsesUI";
 
 export interface StateToProps {
-  responses: any;
-  nlp: any;
-  error: any;
+  responses: CannedResponseCategory[];
+  nlp: TaskNLPEntries;
+  error: string | undefined;
 }
 
 export interface DispatchToProps {
   responsesPromise: () => void;
-  nlpPromise: (message: string, taskSid: string | undefined, channelSid: string | undefined) => void;
+  nlpPromise: (
+    message: string,
+    taskSid: string | undefined,
+    channelSid: string | undefined
+  ) => void;
 }
 
 type Props = StateToProps & DispatchToProps;
@@ -30,23 +35,27 @@ const mapDispatchToProps = (dispatch: Dispatch<any>): DispatchToProps => ({
   nlpPromise: bindActionCreators(Actions.nlpPromise, dispatch),
 });
 
-class CannedResponsesContainer extends React.Component<Props> {
-  componentWillMount() {
-    this.props.responsesPromise();
-  }
+const CannedResponsesContainer: React.FunctionComponent<Props> = ({
+  responsesPromise,
+  nlp,
+  error,
+  responses,
+  nlpPromise,
+}) => {
+  React.useEffect(() => {
+    responsesPromise();
+  }, []);
 
-  render() {
-    return (
-      <CannedResponsesUI
-        responses={this.props.responses}
-        nlp={this.props.nlp}
-        error={this.props.error}
-        responsesPromise={this.props.responsesPromise}
-        nlpPromise={this.props.nlpPromise}
-      />
-    );
-  }
-}
+  return (
+    <CannedResponsesUI
+      responses={responses}
+      nlp={nlp}
+      error={error}
+      responsesPromise={responsesPromise}
+      nlpPromise={nlpPromise}
+    />
+  );
+};
 
 export default connect(
   mapStateToProps,
