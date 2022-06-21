@@ -9,12 +9,13 @@ import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
 import { withStyles } from "@material-ui/core/styles";
 
 import Section from "./components/Section/Section";
+import { CannedResponseCategory, TaskNLPEntries } from "shared/types";
 
 interface OwnProps {
   // Props passed directly to the component
   classes: any;
-  responses: any;
-  nlp: any;
+  responses: CannedResponseCategory[];
+  nlp: TaskNLPEntries;
 }
 
 // Props should be a combination of StateToProps, DispatchToProps, and OwnProps
@@ -70,11 +71,13 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
           taskNLPData.intentInfo.sentimentAnalysisResult.queryTextSentiment ??
           null;
         // Filter the canned responses by category for a matching intent
-        const filteredResponses = responses.filter((section: any) => {
-          if (section.section.toLowerCase() === intent) {
-            return section;
+        const filteredResponses = responses.filter(
+          (section: CannedResponseCategory) => {
+            if (section.section.toLowerCase() === intent) {
+              return section;
+            }
           }
-        });
+        );
 
         return [
           {
@@ -116,7 +119,7 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
                     <Divider className={classes.divider} />
                   </Grid>
                   {!!nlp && Object.keys(nlp).length !== 0 ? (
-                    renderItems(context).map((q: any) => (
+                    renderItems(context).map((q: CannedResponseCategory) => (
                       <Grid
                         item
                         xs={12}
@@ -139,7 +142,7 @@ const CRMPanel: React.FunctionComponent<Props> = (props: Props) => {
                     <Divider className={classes.divider} />
                   </Grid>
                   {responses &&
-                    responses.map((q: any) => (
+                    responses.map((q: CannedResponseCategory) => (
                       <Grid
                         item
                         xs={12}

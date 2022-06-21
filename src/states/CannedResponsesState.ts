@@ -1,3 +1,4 @@
+import { CannedResponseCategory, TaskNLPEntries, UpdateNLPActionPayload } from 'shared/types';
 import { Action } from '.';
 import { getCannedReponses, getDialogflowNLP } from '../api'
 
@@ -6,15 +7,15 @@ const ACTION_GET_NLP = 'GET_NLP';
 const ACTION_UPDATE_NLP = 'UPDATE_NLP';
 
 export interface CannedResponsesState {
-  responses: any;
-  nlp: any;
-  error: any;
+  responses: CannedResponseCategory[];
+  nlp: TaskNLPEntries;
+  error: string | undefined;
 }
 
 const initialState: CannedResponsesState = {
   responses: [],
   nlp: {},
-  error: null
+  error: undefined
 };
 
 export const Actions = {
@@ -28,7 +29,7 @@ export const Actions = {
     type: ACTION_GET_NLP,
     payload: getDialogflowNLP(message, taskSid, channelSid),
   }),
-  updateNLP: (data: any) => ({
+  updateNLP: (data: UpdateNLPActionPayload) => ({
     type: ACTION_UPDATE_NLP,
     payload: data,
   })
